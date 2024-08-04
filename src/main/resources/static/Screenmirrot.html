@@ -2,12 +2,138 @@
 <html>
 <head>
     <title>Screen Mirror</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        #screen {
+            width: 80%;
+            height: auto;
+            border: 5px solid #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 5px 2px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button img {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        .button:active {
+            background-color: #3e8e41;
+            transform: scale(1.05);
+        }
+
+        #startButton {
+            background-color: #4CAF50;
+        }
+
+        #stopButton {
+            background-color: #f44336;
+        }
+
+        #stopButton:hover {
+            background-color: #e53935;
+        }
+
+        #stopButton:active {
+            background-color: #d32f2f;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        img {
+            animation: fadeIn 1s;
+        }
+
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: normal;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-<img id="screen" style="width: 100%; height: auto;"/>
-<br />
-<button id="startButton">Start Stream</button>
-<button id="stopButton">Stop Stream</button>
+<div class="header">
+    <h1>Welcome to Screen Mirror App</h1>
+    <p>Seamlessly mirror your laptop screen to your TV</p>
+</div>
+<div id="container">
+    <img id="screen" />
+    <h2>Click Below to Get Started</h2>
+    <button id="startButton" class="button">
+        <img src="https://img.icons8.com/material-rounded/24/ffffff/play.png" alt="Start Icon" />
+        Start Mirroring
+    </button>
+    <button id="stopButton" class="button">
+        <img src="https://img.icons8.com/material-rounded/24/ffffff/stop.png" alt="Stop Icon" />
+        Stop Mirroring
+    </button>
+</div>
 
 <script>
     const imgElement = document.getElementById('screen');
@@ -27,7 +153,7 @@
         };
 
         ws.onclose = function() {
-            alert('WebSocket connection closed');
+            alert('Mirroring Stopped');
         };
 
         ws.onerror = function(error) {
