@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Screen Mirror</title>
+</head>
+<body>
+<img id="screen" style="width: 100%; height: auto;"/>
+<br />
+<button id="startButton">Start Stream</button>
+<button id="stopButton">Stop Stream</button>
+
+<script>
+    const imgElement = document.getElementById('screen');
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+
+    let ws;
+
+    function startStream() {
+        ws = new WebSocket('ws://localhost:8080/stream');
+        ws.binaryType = 'arraybuffer';
+
+        ws.onmessage = function(event) {
+            const blob = new Blob([event.data], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            imgElement.src = url;
+        };
+
+        ws.onclose = function() {
+            alert('WebSocket connection closed');
+        };
+
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+
+        ws.onopen = function() {
+            console.log('WebSocket connection established');
+        };
+    }
+
+    function stopStream() {
+        if (ws) {
+            ws.close();
+            console.log('WebSocket connection closed by user');
+        }
+    }
+
+    startButton.addEventListener('click', () => {
+        startStream();
+        fetch('http://localhost:8080/stream/start')
+            .then(response => response.text())
+            .then(text => console.log(text))
+            .catch(error => console.error('Error:', error));
+    });
+
+    stopButton.addEventListener('click', () => {
+        stopStream();
+        fetch('http://localhost:8080/stream/stop')
+            .then(response => response.text())
+            .then(text => console.log(text))
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>
